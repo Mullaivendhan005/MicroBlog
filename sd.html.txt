@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera Photo Capture</title>
+</head>
+<body>
+    <h1>Camera Photo Capture</h1>
+    <video id="camera-preview" autoplay></video>
+    <button id="capture-button">Capture Photo</button>
+    <canvas id="photo-canvas" style="display: none;"></canvas>
+    <img id="captured-photo" style="display: none;" alt="Captured Photo">
+    
+    <script>
+        const cameraPreview = document.getElementById('camera-preview');
+        const captureButton = document.getElementById('capture-button');
+        const photoCanvas = document.getElementById('photo-canvas');
+        const capturedPhoto = document.getElementById('captured-photo');
+        
+        // Access the user's camera
+        async function initializeCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraPreview.srcObject = stream;
+            } catch (error) {
+                console.error('Error accessing the camera:', error);
+            }
+        }
+
+        // Capture a photo from the camera
+        captureButton.addEventListener('click', () => {
+            photoCanvas.width = cameraPreview.videoWidth;
+            photoCanvas.height = cameraPreview.videoHeight;
+            photoCanvas.getContext('2d').drawImage(cameraPreview, 0, 0, photoCanvas.width, photoCanvas.height);
+            capturedPhoto.src = photoCanvas.toDataURL('image/png');
+            capturedPhoto.style.display = 'block';
+        });
+
+        // Initialize the camera when the page loads
+        window.addEventListener('load', initializeCamera);
+    </script>
+</body>
+</html>
